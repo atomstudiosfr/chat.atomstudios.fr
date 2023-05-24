@@ -1,0 +1,29 @@
+version: "3"
+services:
+  meet_server:
+    restart: always
+    container_name: atom_meet_server
+    build: ./meet/server
+    ports:
+      - "5004:5004"
+    expose:
+      - 5004
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.meetserver.rule=Host(`api.meet.${DOMAIN_NAME:-localhost}`)"
+      - "traefik.http.routers.meetserver.entrypoints=websecure"
+      - "traefik.http.services.meetserver.loadbalancer.server.port=5004"
+
+  meet_client:
+    restart: always
+    container_name: atom_meet_client
+    build: ./meet/client
+    ports:
+      - "5002:5002"
+    expose:
+      - 5002
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.meet.rule=Host(`meet.${DOMAIN_NAME:-localhost}`)"
+      - "traefik.http.routers.meet.entrypoints=websecure"
+      - "traefik.http.services.meet.loadbalancer.server.port=5002"
