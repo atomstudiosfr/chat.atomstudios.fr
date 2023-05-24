@@ -1,28 +1,22 @@
----
-name: Deploy
-
-on:
-  push:
-    branches: [ main ]
-
+name: Build and Deploy
+on: [push]
+permissions:
+  contents: write
 jobs:
-  Deploy:
+  build-and-deploy:
+    concurrency: ci-${{ github.ref }}
     runs-on: ubuntu-latest
     steps:
-      - uses: "actions/checkout@v3"
-      - uses: "easingthemes/ssh-deploy@v2.2.11"
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          ARGS: "-rltgoDzvO --delete"
-          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
-          REMOTE_USER: ${{ secrets.REMOTE_USER }}
-          TARGET: "/home/meet"
-          EXCLUDE: ".git/, .github/, .run/"
-      - uses: "appleboy/ssh-action@master"
+      - name: Checkout 🛎️
+        uses: actions/checkout@v3
+
+      - name: Install and Build 🔧
+        run: |
+          cd app/client
+          npm ci
+          npm run build
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          host: ${{ secrets.REMOTE_HOST }}
-          username: ${{ secrets.REMOTE_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cd /home/meet
-            make run
+          folder: app/client/build
