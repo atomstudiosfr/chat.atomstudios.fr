@@ -1,5 +1,5 @@
 "use strict";
-(self["webpackChunkstream"] = self["webpackChunkstream"] || []).push([["common"],{
+(self["webpackChunkapp"] = self["webpackChunkapp"] || []).push([["common"],{
 
 /***/ 9860:
 /*!********************************!*\
