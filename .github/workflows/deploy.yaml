@@ -12,11 +12,11 @@ jobs:
 
       - name: Install and Build 🔧
         run: |
-          cd app/client
+          cd front
           npm ci
           npm run build
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: app/client/build
+          folder: front/dist
